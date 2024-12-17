@@ -4,6 +4,7 @@
 
 #include <CsvSpawner/CsvSpawnerComponent.h>
 #include <CsvSpawner/CsvSpawnerTypeIds.h>
+#include <Converter/ConverterComponent.h>
 
 namespace CsvSpawner
 {
@@ -21,6 +22,7 @@ namespace CsvSpawner
             m_descriptors.end(),
             {
                 CsvSpawnerComponent::CreateDescriptor(),
+                Converter::ConverterComponent::CreateDescriptor()
             });
     }
 

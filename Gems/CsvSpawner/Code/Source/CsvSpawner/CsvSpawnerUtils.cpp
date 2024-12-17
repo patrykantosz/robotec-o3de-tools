@@ -12,6 +12,9 @@
 #include "CsvSpawnerUtils.h"
 
 #include "AzFramework/Physics/CollisionBus.h"
+#include "Converter/ConverterBus.h"
+#include "ROS2/Georeference/GeoreferenceBus.h"
+#include "ROS2/Georeference/GeoreferenceStructures.h"
 
 #include <AzCore/Asset/AssetSerializer.h>
 #include <AzCore/Serialization/EditContext.h>
@@ -157,7 +160,7 @@ namespace CsvSpawner::CsvSpawnerUtils
     {
         AZStd::optional<AZ::Vector3> hitPosition = AZStd::nullopt;
 
-        AZ_Assert(sceneHandle == AzPhysics::InvalidSceneHandle, "Unable to get  scene handle");
+        AZ_Assert(sceneHandle != AzPhysics::InvalidSceneHandle, "Unable to get  scene handle");
         if (sceneHandle == AzPhysics::InvalidSceneHandle)
         {
             return hitPosition;
@@ -234,6 +237,11 @@ namespace CsvSpawner::CsvSpawnerUtils
 
             const auto& spawnable = GetRandomElement(spawnConfig.m_spawnables, gen);
 
+            ROS2::WGS::WGS84Coordinate coords;
+            ROS2::GeoreferenceRequestsBus::BroadcastResult(
+                coords, &ROS2::GeoreferenceRequestsBus::Events::ConvertFromLevelToWGS84, entityConfig.m_transform.GetTranslation());
+            Converter::ConverterRequestBus::Broadcast(&Converter::ConverterRequestBus::Events::AddToGeoJSON, coords, entityConfig.m_name);
+
             AZ::Transform transform = parentTransform * entityConfig.m_transform *
                 GetRandomTransform(spawnConfig.m_positionStdDev, spawnConfig.m_rotationStdDev, spawnConfig.m_scaleStdDev, gen);
 
@@ -289,6 +297,7 @@ namespace CsvSpawner::CsvSpawnerUtils
             spawner->SpawnAllEntities(ticket, optionalArgs);
             tickets[entityConfig.m_id] = AZStd::move(ticket);
         }
+        Converter::ConverterRequestBus::Broadcast(&Converter::ConverterRequestBus::Events::SaveGeoJSON);
         return tickets;
     }
 
