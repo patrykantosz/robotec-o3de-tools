@@ -64,7 +64,7 @@ namespace Test
             debugDisplay.SetColor(AZ::Colors::White);
             debugDisplay.DrawLine(point, elevatedPoint);
             AZStd::string text = AZStd::string::format("X: %f, Y: %f", point.GetX(), point.GetY());
-            debugDisplay.DrawTextLabel(elevatedPoint, 2.0f, text.c_str());
+            debugDisplay.DrawTextLabel(transform.TransformPoint(elevatedPoint), 2.0f, text.c_str());
         }
         debugDisplay.PopMatrix();
         debugDisplay.SetState(stateBefore);
