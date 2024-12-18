@@ -63,8 +63,9 @@ namespace Test
             const AZ::Vector3 elevatedPoint = point + AZ::Vector3(0.0f, 0.0f, 10.0f);
             debugDisplay.SetColor(AZ::Colors::White);
             debugDisplay.DrawLine(point, elevatedPoint);
-            AZStd::string text = AZStd::string::format("X: %f, Y: %f", point.GetX(), point.GetY());
-            debugDisplay.DrawTextLabel(transform.TransformPoint(elevatedPoint), 2.0f, text.c_str());
+            // AZStd::string text = AZStd::string::format("X: %f, Y: %f", point.GetX(), point.GetY());
+            AZStd::string text{"X"};
+            debugDisplay.DrawTextLabel(transform.TransformPoint(elevatedPoint), 1.0f, text.c_str());
         }
         debugDisplay.PopMatrix();
         debugDisplay.SetState(stateBefore);
